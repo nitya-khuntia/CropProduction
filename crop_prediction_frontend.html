@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Production Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #prediction {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Crop Production Prediction</h2>
+    <form id="predictionForm">
+        <div class="form-group">
+            <label for="state">State Name:</label>
+            <input type="text" id="state" required>
+        </div>
+        <div class="form-group">
+            <label for="district">District Name:</label>
+            <input type="text" id="district" required>
+        </div>
+        <div class="form-group">
+            <label for="year">Crop Year:</label>
+            <input type="number" id="year" required>
+        </div>
+        <div class="form-group">
+            <label for="season">Season:</label>
+            <input type="text" id="season" required>
+        </div>
+        <div class="form-group">
+            <label for="crop">Crop:</label>
+            <input type="text" id="crop" required>
+        </div>
+        <div class="form-group">
+            <label for="area">Area:</label>
+            <input type="number" id="area" required>
+        </div>
+        <button type="button" onclick="getPrediction()">Predict Production</button>
+    </form>
+    <div id="prediction"></div>
+
+    <script>
+        function getPrediction() {
+            var data = {
+                "State_Name": document.getElementById('state').value,
+                "District_Name": document.getElementById('district').value,
+                "Crop_Year": parseInt(document.getElementById('year').value),
+                "Season": document.getElementById('season').value,
+                "Crop": document.getElementById('crop').value,
+                "Area": parseFloat(document.getElementById('area').value)
+            };
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => response.json()).then(data => {
+                document.getElementById('prediction').innerText = "Predicted Production: " + data.predicted_production;
+            }).catch(error => {
+                console.error("Error:", error);
+                document.getElementById('prediction').innerText = "An error occurred. Please try again.";
+            });
+        }
+    </script>
+</body>
+
+</html>
